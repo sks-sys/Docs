@@ -1,0 +1,76 @@
+Task 
+We host a dynamic website using apache server with MySQL as database and install SSL.
+•	Open EC2 service and lunch any instance (I have chosen AMI Linux 2).
+•	Create an instance with SSH, TCP and HTTP enabled and generate a RSA key.
+•	 Run the instance, open SSH in cmd, and run the following command in the file location filename.pem RSA key.
+
+ssh -i "AMlkey.pem" ec2-user@ec2-54-174-105-10.compute-1.amazonaws.com
+
+(which is in SSH client of EC2 instance) which will connect us in ec2 instance ip. After that follow the following command and meaning of this command also provided.
+
+•	To install apache server 
+sudo yum update –y 		-update all packages in that instance.
+sudo yum  install httpd –y		-install apche server
+sudo service httpd start		-start the apache server connection
+sudo service httpd status	-check the status of apache server (if server is running we can see apche test page in instance IP)
+sudo systemctl enable httpd
+
+•	To install mariadb
+sudo yum install -y httpd mariadb-server	-install mariadb-server and client both
+sudo service mariadb start	-start mariadb connection
+sudo systemctl status mariadb
+sudo systemctl enable mariadb
+
+#sudo mysql_secure_installation		-install mysql and we have to accept certain conditions after adding password.
+sudo systemctl restart mariadb
+sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2	-install php 
+
+
+Check the html dir after copied the file. If file are copied then we are good to go in wordpress site by the domain.
+Now host the domain from route53 with the record IP.
+
+And we can set the wordpress loging by following setup up 
+sudo mysql –u root –p 
+CREATE USER 'wordpress-user'@'localhost' IDENTIFIED BY 'your_strong_password';
+CREATE DATABASE `wordpress-db`;
+GRANT ALL PRIVILEGES ON `wordpress-db`.* TO "wordpress-user"@"localhost";
+FLUSH PRIVILEGES;
+Exit
+
+
+sudo yum install wget unzip –y			-install package to get link and unzip 
+sudo wget https://wordpress.org/latest.zip		-get link
+sudo unzip latest.zip				-unzip dir
+
+cd wordpress cp wp-config-sample.php wp-config.php 
+sudo nano wp-config.php
+
+setup db config insdie it as above.
+
+sudo cp -r wordpress/*  /var/www/html/		-copy all the file of wordpress into html dir.
+
+and we have to configure the conf.d of apche server. 
+sudo nano /etc/httpd/conf.d/vhost1.conf 
+
+put following in virtual host with your proper subdomain name. 
+<VirtualHost*.80>
+ServerAdmin root@localhost 
+ServerName suppot.iamsks.tk 
+ServerAlias www.support.iamsks.tk 
+DocumentRoot /var/www/html/ 
+<VirtualHost>
+
+And restart apache sudo service httpd restar
+•	To Install SSL .
+-Install and enable EPEL
+-install and configure Let’s Encrypt
+sudo amazon-linux-extras install epel
+sudo yum install certbot-apache
+sudo certbot –apache
+
+…………………………………………
+and enter your required entries…..
+
+
+sudo service httpd restart
+
