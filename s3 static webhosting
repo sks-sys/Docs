@@ -1,0 +1,28 @@
+Task 1
+S3statichosting.tk
+We have create a static website in s3 and host through route53.
+ Open S3 service
+ Create bucket with domain name (you should have a domain name registered first)
+ Go to bucket properties and enable static website hosting and in index document write 
+index file name [index.html] and save it
+ Go to permissions of bucket, uncheck the block public access, and write following code 
+in bucket policy and save it.
+{
+ "Version": "2012-10-17",
+ "Id": "Policy1565606625345",
+ "Statement": [
+ {
+ "Sid": "Stmt1565606605364",
+ "Effect": "Allow",
+ "Principal": "*",
+ "Action": "s3:*",
+ "Resource": "arn:aws:s3:::s3statichosting.tk/*"
+ }
+ ]
+}
+ Now go to the route 53 service and create the hosting zone with the same domain name.
+ Click on the your created hosting zone and create a record
+ Check the alias on and chose endpoint to s3 website endpoint similarly choose region 
+from where you created the s3 bucket, write the s3 endpoint from the s3 bucket, and 
+create the record. (Make sure your NS is linked with the domain name)
+ Now our site is good to go
